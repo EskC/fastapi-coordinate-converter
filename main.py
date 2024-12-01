@@ -25,8 +25,10 @@ class CoordinateRequest(BaseModel):
 @app.post("/convert")
 async def convert_coordinates(data: CoordinateRequest):
     try:
+        # Koordinat dönüşümü işlemi
         transformer = Transformer.from_crs(f"epsg:{data.from_epsg}", f"epsg:{data.to_epsg}", always_xy=True)
         x2, y2 = transformer.transform(data.x, data.y)
         return {"x": x2, "y": y2}
     except Exception as e:
+        # Eğer bir hata oluşursa, HTTPException ile ayrıntılı hata mesajı döndürüyoruz
         raise HTTPException(status_code=500, detail=f"Bir hata oluştu: {str(e)}")
