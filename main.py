@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pyproj import Transformer
@@ -24,6 +24,9 @@ class CoordinateRequest(BaseModel):
 # POST endpoint'i tanımlayın
 @app.post("/convert")
 async def convert_coordinates(data: CoordinateRequest):
-    transformer = Transformer.from_crs(f"epsg:{data.from_epsg}", f"epsg:{data.to_epsg}", always_xy=True)
-    x2, y2 = transformer.transform(data.x, data.y)
-    return {"x": x2, "y": y2}
+    try:
+        transformer = Transformer.from_crs(f"epsg:{data.from_epsg}", f"epsg:{data.to_epsg}", always_xy=True)
+        x2, y2 = transformer.transform(data.x, data.y)
+        return {"x": x2, "y": y2}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bir hata oluştu: {str(e)}")
