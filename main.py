@@ -1,9 +1,32 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pyproj import Transformer
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# FastAPI uygulamasını başlat
+
+
 app = FastAPI()
+
+# CORS middleware'ini ekleyin
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+# CORS middleware'ini ekleyin
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Tüm domain'lere izin verir
+    allow_credentials=False,  # Kimlik doğrulama bilgileri (cookies, headers) gerekmez
+    allow_methods=["*"],  # Tüm HTTP metodlarına izin verir (GET, POST, vb.)
+    allow_headers=["*"],  # Tüm başlıklara izin verir
+)
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello World"}
+
 
 # Kullanıcıdan veri almak için bir model oluşturun
 class CoordinateRequest(BaseModel):
